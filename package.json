@@ -1,0 +1,21 @@
+{
+  "name": "trackingapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "fastify": "^4.24.3",
+    "fastify-swagger": "^5.2.0",
+    "knex": "^3.0.1",
+    "knex-csv-seeder": "^0.4.1",
+    "pg": "^8.11.3",
+    "typescript": "^5.2.2"
+  }
+}
