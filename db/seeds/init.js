@@ -29,7 +29,6 @@ exports.seed = async function (knex) {
         reject(err);
       });
   });
-  console.log("parsed");
 
   await knex("shipments").insert(rows);
   console.log("shipments table seeded");

@@ -2,6 +2,7 @@ import { FastifyInstance, RouteShorthandOptions } from "fastify";
 import TrackingService from "../service/TrackingService";
 import { CurrentWeather, Shipment } from "types";
 import WeatherService from "../service/WeatherService";
+import { BadRequestError } from "../helpers/errors";
 
 type GetTrackingResponse = {
   shipments: Shipment[];
@@ -80,9 +81,9 @@ export default async function trackingRoutes(fastify: FastifyInstance) {
     const { trackingNumber, carrier } = request.query as GetTrackingQuery;
 
     if (!trackingNumber || !carrier) {
-      return reply.status(400).send({
-        error: "Both trackingNumber and carrier must be provided",
-      });
+      throw new BadRequestError(
+        "Both trackingNumber and carrier must be provided"
+      );
     }
 
     const shipments =
@@ -90,12 +91,6 @@ export default async function trackingRoutes(fastify: FastifyInstance) {
         trackingNumber,
         carrier
       );
-
-    if (shipments.length === 0) {
-      return reply.status(404).send({
-        error: "No shipments found",
-      });
-    }
 
     const receiverWeather = await weatherService.getWeather(
       shipments[0].receiver_postal_code,

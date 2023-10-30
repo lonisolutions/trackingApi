@@ -1,5 +1,10 @@
 import Fastify, { FastifyInstance } from "fastify";
 import trackingRoutes from "./routes/trackingRoutes";
+import {
+  BadRequestError,
+  NotFoundError,
+  InternalServerError,
+} from "./helpers/errors";
 
 const buildApp = async (): Promise<FastifyInstance> => {
   const app = Fastify({
@@ -11,10 +16,19 @@ const buildApp = async (): Promise<FastifyInstance> => {
     },
   });
 
-  app.register(trackingRoutes, { prefix: "/tracking" });
-  app.get("/", async () => {
-    return { hello: "world" };
+  app.setErrorHandler((error, request, reply) => {
+    if (error instanceof BadRequestError) {
+      reply.status(400).send({ error: error.message });
+    } else if (error instanceof NotFoundError) {
+      reply.status(404).send({ error: error.message });
+    } else if (error instanceof InternalServerError) {
+      reply.status(500).send({ error: error.message });
+    } else {
+      reply.status(500).send({ error: "Unknown error" });
+    }
   });
+
+  app.register(trackingRoutes, { prefix: "/tracking" });
 
   return app;
 };
