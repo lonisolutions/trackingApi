@@ -6,10 +6,12 @@ import {
   InternalServerError,
 } from "./helpers/errors";
 
-const buildApp = async (): Promise<FastifyInstance> => {
+const buildApp = async (
+  logLevel: string = "info"
+): Promise<FastifyInstance> => {
   const app = Fastify({
     logger: {
-      level: "info",
+      level: logLevel,
       transport: {
         target: "pino-pretty",
       },
@@ -28,7 +30,7 @@ const buildApp = async (): Promise<FastifyInstance> => {
     }
   });
 
-  app.register(trackingRoutes, { prefix: "/tracking" });
+  await app.register(trackingRoutes, { prefix: "/tracking" });
 
   return app;
 };

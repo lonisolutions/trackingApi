@@ -38,7 +38,7 @@ class WeatherService {
     postalCode: string,
     city: string
   ): Promise<WeatherData> {
-    const API_KEY = process.env.WEATHER_API_KEY || "your_default_key";
+    const API_KEY = "0f0f310516f644d383d52570ba75954c";
     const BASE_URL = "https://api.weatherbit.io/v2.0/current";
 
     try {
@@ -48,6 +48,7 @@ class WeatherService {
           city: city,
           key: API_KEY,
         },
+        timeout: 5000,
       });
       const weatherInfo = response.data.data[0];
       return {

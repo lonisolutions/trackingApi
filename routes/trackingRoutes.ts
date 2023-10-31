@@ -86,11 +86,10 @@ export default async function trackingRoutes(fastify: FastifyInstance) {
       );
     }
 
-    const shipments =
-      await await trackingService.findByTrackingNumberAndCarrier(
-        trackingNumber,
-        carrier
-      );
+    const shipments = await trackingService.findByTrackingNumberAndCarrier(
+      trackingNumber,
+      carrier
+    );
 
     const receiverWeather = await weatherService.getWeather(
       shipments[0].receiver_postal_code,
