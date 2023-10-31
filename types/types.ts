@@ -11,7 +11,7 @@ export type Shipment = {
   status: string;
 };
 
-export type shipmentWithPostalCodesAndCities = Shipment & {
+export type DetailedShipment = Shipment & {
   receiver_postal_code: string;
   receiver_city: string;
   sender_postal_code: string;

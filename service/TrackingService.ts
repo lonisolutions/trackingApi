@@ -1,4 +1,4 @@
-import { shipmentWithPostalCodesAndCities } from "types";
+import { DetailedShipment } from "types";
 import TrackingRepository from "../repository/TrackingRepository";
 import { extractPostalAndCity } from "../helpers/regex";
 import { NotFoundError, InternalServerError } from "../helpers/errors";
@@ -12,7 +12,7 @@ class TrackingService {
   async findByTrackingNumberAndCarrier(
     trackingNumber: string,
     carrier: string
-  ): Promise<shipmentWithPostalCodesAndCities[]> {
+  ): Promise<DetailedShipment[]> {
     try {
       const shipments =
         await this.trackingRepository.findByTrackingNumberAndCarrier(
@@ -22,6 +22,7 @@ class TrackingService {
       if (!shipments || shipments.length === 0) {
         throw new NotFoundError("No shipments found");
       }
+      // we assume the addresses for all shipments are the same
       const receiverPostalAndCity = await extractPostalAndCity(
         shipments[0].receiver_address
       );

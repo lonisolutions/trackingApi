@@ -1,7 +1,6 @@
 import { FastifyInstance } from "fastify";
 import knexInstance from "../../db/index";
 import buildApp from "../../app";
-import trackingRoutes from "../../routes/trackingRoutes";
 
 let server: FastifyInstance;
 describe("Integration Tests for Tracking Routes", () => {
@@ -12,7 +11,6 @@ describe("Integration Tests for Tracking Routes", () => {
     await knexInstance.seed.run();
 
     server = await buildApp("silent");
-    await server.register(trackingRoutes);
   });
 
   afterAll(async () => {
@@ -23,7 +21,7 @@ describe("Integration Tests for Tracking Routes", () => {
   it("should get tracking and weather information", async () => {
     const response = await server.inject({
       method: "GET",
-      url: "/",
+      url: "/tracking",
       query: {
         trackingNumber: "TN12345679",
         carrier: "ups",
@@ -43,7 +41,7 @@ describe("Integration Tests for Tracking Routes", () => {
   it("should return Bad Request if either tracking or carrier is missing", async () => {
     const response = await server.inject({
       method: "GET",
-      url: "/",
+      url: "/tracking",
       query: {
         carrier: "ups",
       },
@@ -59,7 +57,7 @@ describe("Integration Tests for Tracking Routes", () => {
   it("should handle not found for unknown tracking and carrier", async () => {
     const response = await server.inject({
       method: "GET",
-      url: "/",
+      url: "/tracking",
       query: {
         trackingNumber: "TNUNKNOWN",
         carrier: "unknown",

@@ -2,34 +2,34 @@ import axios from "axios";
 import { WeatherData } from "types";
 import WeatherRepository from "../repository/WeatherRepository";
 import { InternalServerError } from "../helpers/errors";
+
+const BASE_URL = "https://api.weatherbit.io/v2.0/current";
+const ONE_HOUR_IN_MILLISECONDS = 3600000;
+
 class WeatherService {
   private readonly weatherRepository: WeatherRepository;
+
   constructor() {
     this.weatherRepository = new WeatherRepository();
   }
 
   async getWeather(postalCode: string, city: string): Promise<WeatherData> {
     try {
-      const weatherData = await this.weatherRepository.getWeatherByPostalCode(
-        postalCode
-      );
+      const cachedWeatherData =
+        await this.weatherRepository.getWeatherByPostalCode(postalCode);
       if (
-        weatherData &&
-        weatherData.last_fetched > new Date(Date.now() - 3600000)
+        cachedWeatherData &&
+        cachedWeatherData.last_fetched >
+          new Date(Date.now() - ONE_HOUR_IN_MILLISECONDS)
       ) {
-        return {
-          postal_code: postalCode,
-          city: weatherData.city,
-          temperature: weatherData.temperature,
-          description: weatherData.description,
-        } as WeatherData;
+        return cachedWeatherData;
       } else {
-        const weatherData = await this.getWeatherFromAPI(postalCode, city);
-        await this.weatherRepository.saveWeather(weatherData);
-        return weatherData;
+        const freshWeatherData = await this.getWeatherFromAPI(postalCode, city);
+        await this.weatherRepository.saveWeather(freshWeatherData);
+        return freshWeatherData;
       }
     } catch (error) {
-      console.error("Error from DB", error);
+      console.error("Error from DB for postal code:", postalCode, error);
       throw new InternalServerError("Error while fetching weather data");
     }
   }
@@ -38,8 +38,11 @@ class WeatherService {
     postalCode: string,
     city: string
   ): Promise<WeatherData> {
-    const API_KEY = "0f0f310516f644d383d52570ba75954c";
-    const BASE_URL = "https://api.weatherbit.io/v2.0/current";
+    const API_KEY = process.env.WEATHER_API_KEY;
+
+    if (!API_KEY) {
+      throw new InternalServerError("Weather API key is missing");
+    }
 
     try {
       const response = await axios.get(BASE_URL, {
@@ -58,7 +61,11 @@ class WeatherService {
         description: weatherInfo.weather.description as string,
       } as WeatherData;
     } catch (error) {
-      console.error("Error while fetching weather data from API:", error);
+      console.error(
+        "Error fetching weather data from API for postal code:",
+        postalCode,
+        error
+      );
       throw new InternalServerError(
         "Error while fetching weather data from API"
       );

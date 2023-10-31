@@ -14,7 +14,12 @@ type GetTrackingQuery = {
   carrier?: string;
 };
 
-const routeOptions: RouteShorthandOptions = {
+interface TrackingRouteOptions {
+  trackingService: TrackingService;
+  weatherService: WeatherService;
+}
+
+const getRouteOptions: RouteShorthandOptions = {
   schema: {
     querystring: {
       type: "object",
@@ -74,10 +79,14 @@ const routeOptions: RouteShorthandOptions = {
   },
 };
 
-export default async function trackingRoutes(fastify: FastifyInstance) {
-  const trackingService = new TrackingService();
-  const weatherService = new WeatherService();
-  fastify.get("/", routeOptions, async (request, reply) => {
+export default async function trackingRoutes(
+  fastify: FastifyInstance,
+  opts: TrackingRouteOptions,
+  done: Function
+) {
+  const { trackingService, weatherService } = opts;
+
+  fastify.get("/tracking", getRouteOptions, async (request, reply) => {
     const { trackingNumber, carrier } = request.query as GetTrackingQuery;
 
     if (!trackingNumber || !carrier) {
@@ -107,4 +116,6 @@ export default async function trackingRoutes(fastify: FastifyInstance) {
 
     return reply.send(response);
   });
+
+  done();
 }

@@ -1,4 +1,3 @@
-import { shipmentWithPostalCodesAndCities } from "types";
 import TrackingRepository from "../../repository/TrackingRepository";
 import { extractPostalAndCity } from "../../helpers/regex";
 import { NotFoundError, InternalServerError } from "../../helpers/errors";

@@ -1,5 +1,3 @@
-// WeatherRepository.test.ts
-
 import WeatherRepository from "../../repository/WeatherRepository";
 import knexInstance from "../../db";
 import { WeatherData } from "types";

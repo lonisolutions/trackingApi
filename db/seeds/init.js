@@ -7,7 +7,6 @@ const path = require("path");
  * @returns { Promise<void> }
  */
 exports.seed = async function (knex) {
-  // Deletes ALL existing entries
   await knex("shipments").del();
   console.log("shipments table deleted");
 

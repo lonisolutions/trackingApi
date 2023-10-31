@@ -7,6 +7,8 @@ import {
 } from "./helpers/errors";
 import { swaggerOptions } from "./routes/docs/swaggerConfig";
 import swagger from "@fastify/swagger";
+import TrackingService from "./service/TrackingService";
+import WeatherService from "./service/WeatherService";
 
 const buildApp = async (
   logLevel: string = "info"
@@ -33,7 +35,12 @@ const buildApp = async (
   });
 
   app.register(swagger, swaggerOptions);
-  await app.register(trackingRoutes, { prefix: "/tracking" });
+
+  const trackingService = new TrackingService();
+  const weatherService = new WeatherService();
+
+  await app.register(trackingRoutes, { trackingService, weatherService });
+
   return app;
 };
 
