@@ -1,7 +1,7 @@
-import TrackingRepository from "../repository/TrackingRepository";
-import knexInstance from "../db";
+import TrackingRepository from "../../repository/TrackingRepository";
+import knexInstance from "../../db";
 
-jest.mock("../db");
+jest.mock("../../db");
 
 describe("TrackingRepository", () => {
   let repo: TrackingRepository;

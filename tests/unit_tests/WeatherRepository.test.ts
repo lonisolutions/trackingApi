@@ -1,10 +1,10 @@
 // WeatherRepository.test.ts
 
-import WeatherRepository from "../repository/WeatherRepository";
-import knexInstance from "../db";
+import WeatherRepository from "../../repository/WeatherRepository";
+import knexInstance from "../../db";
 import { WeatherData } from "types";
 
-jest.mock("../db");
+jest.mock("../../db");
 
 describe("WeatherRepository", () => {
   let repo: WeatherRepository;
