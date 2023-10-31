@@ -5,6 +5,8 @@ import {
   NotFoundError,
   InternalServerError,
 } from "./helpers/errors";
+import { swaggerOptions } from "./routes/docs/swaggerConfig";
+import swagger from "@fastify/swagger";
 
 const buildApp = async (
   logLevel: string = "info"
@@ -30,8 +32,8 @@ const buildApp = async (
     }
   });
 
+  app.register(swagger, swaggerOptions);
   await app.register(trackingRoutes, { prefix: "/tracking" });
-
   return app;
 };
 
